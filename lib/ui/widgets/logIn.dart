@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:ui';
 import 'package:contact_book/ui/utils/utilityFunctions.dart';
+import 'package:contact_book/ui/widgets/contactInfo.dart';
 import 'package:contact_book/ui/widgets/registration.dart';
 import 'package:flutter/material.dart';
 
@@ -61,6 +62,8 @@ class _LogInPageState extends State<LogIn> {
           } else {
             // Login data checked goes here
             // like check is user registered or password correct
+            Navigator.pushNamed(context,
+                ContactInfo.urlPath);
           }
         },
         child: Column(

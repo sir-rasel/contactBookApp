@@ -1,19 +1,18 @@
 import 'dart:ui';
 import 'package:contact_book/ui/utils/utilityFunctions.dart';
-import 'package:contact_book/ui/widgets/contactInfo.dart';
 import 'package:flutter/material.dart';
 
-class Registration extends StatefulWidget {
-  Registration({Key key, this.title}) : super(key: key);
+class ContactInfo extends StatefulWidget {
+  ContactInfo({Key key, this.title}) : super(key: key);
 
   final String title;
 
   static const String urlPath = "register";
   @override
-  _RegistrationPageState createState() => _RegistrationPageState();
+  _ContactInfoPageState createState() => _ContactInfoPageState();
 }
 
-class _RegistrationPageState extends State<Registration> {
+class _ContactInfoPageState extends State<ContactInfo> {
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
 
   TextEditingController emailFieldController = TextEditingController();
@@ -85,7 +84,7 @@ class _RegistrationPageState extends State<Registration> {
       ),
     );
 
-    final registerButton = ElevatedButton(
+    final updateButton = ElevatedButton(
 
       onPressed: () {
         bool emailValid = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+"
@@ -102,8 +101,7 @@ class _RegistrationPageState extends State<Registration> {
         } else {
           // Login data checked goes here
           // like check is user registered or password correct
-          Navigator.pushNamed(context,
-              ContactInfo.urlPath);
+
         }
       },
       child: Column(
@@ -113,7 +111,7 @@ class _RegistrationPageState extends State<Registration> {
             height: 50.0,
             child: Center(
               child: Text(
-                "Register",
+                "Update",
                 style: TextStyle(
                   fontSize: 30,
                   color: Colors.white,
@@ -158,7 +156,7 @@ class _RegistrationPageState extends State<Registration> {
                   height: 15,
                 ),
                 Text(
-                  "REGISTRATION FORM :",
+                  "Contact Details :",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 30.0,
@@ -184,7 +182,7 @@ class _RegistrationPageState extends State<Registration> {
                       SizedBox(
                         height: 35.0,
                       ),
-                      registerButton,
+                      updateButton,
                       SizedBox(
                         height: 15.0,
                       ),
