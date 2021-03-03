@@ -19,12 +19,13 @@ class _RegistrationPageState extends State<Registration> {
   TextEditingController passwordFieldController = TextEditingController();
   TextEditingController phoneFieldController = TextEditingController();
   TextEditingController nameFieldController = TextEditingController();
+  TextEditingController addressFieldController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     final nameField = TextField(
       obscureText: false,
-      controller: emailFieldController,
+      controller: nameFieldController,
       keyboardType: TextInputType.text,
       style: style,
       decoration: InputDecoration(
@@ -61,12 +62,24 @@ class _RegistrationPageState extends State<Registration> {
 
     final phoneField = TextField(
       obscureText: false,
-      controller: emailFieldController,
+      controller: phoneFieldController,
       keyboardType: TextInputType.number,
       style: style,
       decoration: InputDecoration(
           contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
           hintText: "Phone Number",
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(40.0))
+      ),
+    );
+
+    final addressField = TextField(
+      obscureText: false,
+      controller: addressFieldController,
+      keyboardType: TextInputType.text,
+      style: style,
+      decoration: InputDecoration(
+          contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+          hintText: "Full Name",
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(40.0))
       ),
     );
