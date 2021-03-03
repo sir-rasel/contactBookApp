@@ -107,13 +107,12 @@ class _LogInPageState extends State<LogIn> {
                 SizedBox(
                   height: 50,
                 ),
-                // Image(
-                //   // image: AssetImage("assets/images/home.png"),
-                //   width: 300,
-                //   height: 250,
-                //   alignment: Alignment.center,
-                //   color: Colors.blue,
-                // ),
+                Image(
+                  image: AssetImage("assests/images/icon.png"),
+                  width: 300,
+                  height: 250,
+                  alignment: Alignment.center,
+                ),
                 SizedBox(
                   height: 15,
                 ),

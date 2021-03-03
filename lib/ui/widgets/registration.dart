@@ -1,6 +1,6 @@
 import 'dart:ui';
 import 'package:contact_book/ui/utils/utilityFunctions.dart';
-import 'package:contact_book/ui/widgets/contactInfo.dart';
+import 'package:contact_book/ui/widgets/addContact.dart';
 import 'package:flutter/material.dart';
 
 class Registration extends StatefulWidget {
@@ -103,7 +103,7 @@ class _RegistrationPageState extends State<Registration> {
           // Login data checked goes here
           // like check is user registered or password correct
           Navigator.pushNamed(context,
-              ContactInfo.urlPath);
+              AddContact.urlPath);
         }
       },
       child: Column(
@@ -147,13 +147,12 @@ class _RegistrationPageState extends State<Registration> {
                 SizedBox(
                   height: 50,
                 ),
-                // Image(
-                //   // image: AssetImage("assets/images/home.png"),
-                //   width: 300,
-                //   height: 250,
-                //   alignment: Alignment.center,
-                //   color: Colors.blue,
-                // ),
+                Image(
+                  image: AssetImage("assests/images/icon.png"),
+                  width: 300,
+                  height: 250,
+                  alignment: Alignment.center,
+                ),
                 SizedBox(
                   height: 15,
                 ),

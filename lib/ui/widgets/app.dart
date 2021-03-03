@@ -1,3 +1,5 @@
+import 'package:contact_book/ui/widgets/addContact.dart';
+import 'package:contact_book/ui/widgets/contactInfo.dart';
 import 'package:contact_book/ui/widgets/logIn.dart';
 import 'package:contact_book/ui/widgets/registration.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +17,8 @@ class MyApp extends StatelessWidget {
       routes: {
         LogIn.urlPath: (context) => LogIn(),
         Registration.urlPath: (context) => Registration(),
-
+        ContactInfo.urlPath: (context) => ContactInfo(),
+        AddContact.urlPath: (context) => AddContact(),
       },
     );
   }

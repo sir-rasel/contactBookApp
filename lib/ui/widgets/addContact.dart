@@ -2,17 +2,17 @@ import 'dart:ui';
 import 'package:contact_book/ui/utils/utilityFunctions.dart';
 import 'package:flutter/material.dart';
 
-class ContactInfo extends StatefulWidget {
-  ContactInfo({Key key, this.title}) : super(key: key);
+class AddContact extends StatefulWidget {
+  AddContact({Key key, this.title}) : super(key: key);
 
   final String title;
 
-  static const String urlPath = "details";
+  static const String urlPath = "add";
   @override
-  _ContactInfoPageState createState() => _ContactInfoPageState();
+  _addContactPageState createState() => _addContactPageState();
 }
 
-class _ContactInfoPageState extends State<ContactInfo> {
+class _addContactPageState extends State<AddContact> {
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
 
   TextEditingController emailFieldController = TextEditingController();
@@ -84,7 +84,7 @@ class _ContactInfoPageState extends State<ContactInfo> {
       ),
     );
 
-    final updateButton = ElevatedButton(
+    final addButton = ElevatedButton(
 
       onPressed: () {
         bool emailValid = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+"
@@ -111,7 +111,7 @@ class _ContactInfoPageState extends State<ContactInfo> {
             height: 50.0,
             child: Center(
               child: Text(
-                "Update",
+                "Add",
                 style: TextStyle(
                   fontSize: 30,
                   color: Colors.white,
@@ -155,7 +155,7 @@ class _ContactInfoPageState extends State<ContactInfo> {
                   height: 15,
                 ),
                 Text(
-                  "Contact Details :",
+                  "Add Contact :",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 30.0,
@@ -181,7 +181,7 @@ class _ContactInfoPageState extends State<ContactInfo> {
                       SizedBox(
                         height: 35.0,
                       ),
-                      updateButton,
+                      addButton,
                       SizedBox(
                         height: 15.0,
                       ),
