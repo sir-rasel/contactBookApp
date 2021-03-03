@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:contact_book/ui/utils/utilityFunctions.dart';
 import 'package:contact_book/ui/widgets/contactInfo.dart';
+import 'package:contact_book/ui/widgets/contactList.dart';
 import 'package:contact_book/ui/widgets/registration.dart';
 import 'package:flutter/material.dart';
 
@@ -63,7 +64,7 @@ class _LogInPageState extends State<LogIn> {
             // Login data checked goes here
             // like check is user registered or password correct
             Navigator.pushNamed(context,
-                ContactInfo.urlPath);
+                ContactsList.urlPath);
           }
         },
         child: Column(
@@ -97,6 +98,18 @@ class _LogInPageState extends State<LogIn> {
               onPressed:() => exit(0),
           ),
           title: Text('Bhalobasar Contact Book',),
+          actions: [
+            Padding(
+              padding: EdgeInsets.only(right: 10.0),
+              child: IconButton(
+                  icon: Icon(Icons.account_circle,
+                      color: Colors.white, size: 40),
+                  onPressed: () {
+                    Navigator.pushNamed(context, ContactInfo.urlPath);
+                  },
+              ),
+            ),
+          ],
         ),
         body: SingleChildScrollView(
           child: Center(
