@@ -1,6 +1,10 @@
 import 'dart:ui';
+import 'package:contact_book/core/database/credentialsHelper.dart';
+import 'package:contact_book/core/database/userHelper.dart';
+import 'package:contact_book/core/models/credentials.dart';
+import 'package:contact_book/core/models/user.dart';
 import 'package:contact_book/ui/utils/utilityFunctions.dart';
-import 'package:contact_book/ui/widgets/addContact.dart';
+import 'package:contact_book/ui/widgets/contactList.dart';
 import 'package:flutter/material.dart';
 
 class Registration extends StatefulWidget {
@@ -14,6 +18,16 @@ class Registration extends StatefulWidget {
 }
 
 class _RegistrationPageState extends State<Registration> {
+  var loginCredentialsDBHelper;
+  var userDBHelper;
+
+  @override
+  void initState() {
+    super.initState();
+    loginCredentialsDBHelper = CredentialsDBHelper();
+    userDBHelper = UserDBHelper();
+  }
+
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
 
   TextEditingController emailFieldController = TextEditingController();
@@ -95,6 +109,8 @@ class _RegistrationPageState extends State<Registration> {
           formResponseMassage("Email should be valid and not empty", context);
         } else if (passwordFieldController.text.isEmpty) {
           formResponseMassage("Password must not empty", context);
+        } else if (passwordFieldController.text.length < 8) {
+          formResponseMassage("Password must be al least 8 characters long", context);
         } else if (nameFieldController.text.isEmpty) {
           formResponseMassage("Name must not empty", context);
         } else if (phoneFieldController.text.isEmpty) {
@@ -102,8 +118,26 @@ class _RegistrationPageState extends State<Registration> {
         } else {
           // Login data checked goes here
           // like check is user registered or password correct
+          User user = User(
+            null,
+            nameFieldController.text,
+            phoneFieldController.text,
+            emailFieldController.text,
+            addressFieldController.text
+          );
+
+          LoginCredentials credentials = LoginCredentials(
+              null,
+              emailFieldController.text,
+              passwordFieldController.text,
+          );
+
+          userDBHelper.save(user);
+          loginCredentialsDBHelper.save(credentials);
+          
+          formResponseMassage("SuccessFully Registered", context);
           Navigator.pushNamed(context,
-              AddContact.urlPath);
+              ContactsList.urlPath);
         }
       },
       child: Column(

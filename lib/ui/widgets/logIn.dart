@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:ui';
+import 'package:contact_book/core/database/credentialsHelper.dart';
 import 'package:contact_book/ui/utils/utilityFunctions.dart';
 import 'package:contact_book/ui/widgets/contactInfo.dart';
 import 'package:contact_book/ui/widgets/contactList.dart';
@@ -17,6 +18,15 @@ class LogIn extends StatefulWidget {
 }
 
 class _LogInPageState extends State<LogIn> {
+  var loginCredentialsDBHelper;
+  var status;
+
+  @override
+  void initState() {
+    super.initState();
+    loginCredentialsDBHelper = CredentialsDBHelper();
+  }
+
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
 
   TextEditingController emailFieldController = TextEditingController();
@@ -63,8 +73,18 @@ class _LogInPageState extends State<LogIn> {
           } else {
             // Login data checked goes here
             // like check is user registered or password correct
-            Navigator.pushNamed(context,
-                ContactsList.urlPath);
+            loginCredentialsDBHelper.getUser(emailFieldController.text)
+                          .then((password) => setState(() => status = password);
+            if(status == null || status != passwordFieldController.text){
+              print(status.length);
+              print(passwordFieldController.text);
+
+              formResponseMassage("Email or password invalid!", context);
+            } else {
+              formResponseMassage("Login Successfully!!", context);
+              Navigator.pushNamed(context,
+                  ContactsList.urlPath);
+            }
           }
         },
         child: Column(
