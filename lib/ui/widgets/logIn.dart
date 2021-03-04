@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:ui';
 import 'package:contact_book/core/database/credentialsHelper.dart';
+import 'package:contact_book/core/database/databaseInitializer.dart';
 import 'package:contact_book/ui/utils/utilityFunctions.dart';
 import 'package:contact_book/ui/widgets/contactInfo.dart';
 import 'package:contact_book/ui/widgets/contactList.dart';
@@ -24,6 +25,8 @@ class _LogInPageState extends State<LogIn> {
   @override
   void initState() {
     super.initState();
+    status = false;
+    var _ = DatabaseInitializer().initDb();
     loginCredentialsDBHelper = CredentialsDBHelper();
   }
 
@@ -70,22 +73,27 @@ class _LogInPageState extends State<LogIn> {
             formResponseMassage("Email should be valid and not empty", context);
           } else if (passwordFieldController.text.isEmpty) {
             formResponseMassage("Password must not empty", context);
+          } else if (passwordFieldController.text.length < 8) {
+            formResponseMassage("Password Should be at least 8 character", context);
           } else {
             // Login data checked goes here
             // like check is user registered or password correct
-            loginCredentialsDBHelper.getUser(emailFieldController.text)
-                          .then((password) => setState(() => status = password);
-            if(status == null || status != passwordFieldController.text){
-              print(status.length);
-              print(passwordFieldController.text);
+              loginCredentialsDBHelper = CredentialsDBHelper();
 
-              formResponseMassage("Email or password invalid!", context);
-            } else {
-              formResponseMassage("Login Successfully!!", context);
-              Navigator.pushNamed(context,
-                  ContactsList.urlPath);
+              loginCredentialsDBHelper
+              .isRegistered(emailFieldController.text, passwordFieldController.text)
+              .then((value) => setState(
+                  () {
+                    status = value;
+                    if(!status){
+                      formResponseMassage("Email or password invalid!", context);
+                    } else {
+                      formResponseMassage("Login Successfully!!", context);
+                      Navigator.pushNamed(context,
+                          ContactsList.urlPath);
+                    }
+                  } ));
             }
-          }
         },
         child: Column(
             children: <Widget> [

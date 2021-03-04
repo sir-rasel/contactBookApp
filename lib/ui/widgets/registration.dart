@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:contact_book/core/database/credentialsHelper.dart';
+import 'package:contact_book/core/database/databaseInitializer.dart';
 import 'package:contact_book/core/database/userHelper.dart';
 import 'package:contact_book/core/models/credentials.dart';
 import 'package:contact_book/core/models/user.dart';
@@ -20,10 +21,13 @@ class Registration extends StatefulWidget {
 class _RegistrationPageState extends State<Registration> {
   var loginCredentialsDBHelper;
   var userDBHelper;
+  var status;
 
   @override
   void initState() {
     super.initState();
+    status = false;
+    var _ = DatabaseInitializer().initDb();
     loginCredentialsDBHelper = CredentialsDBHelper();
     userDBHelper = UserDBHelper();
   }
@@ -132,13 +136,26 @@ class _RegistrationPageState extends State<Registration> {
               passwordFieldController.text,
           );
 
-          userDBHelper.save(user);
-          loginCredentialsDBHelper.save(credentials);
-          
-          formResponseMassage("SuccessFully Registered", context);
-          Navigator.pushNamed(context,
-              ContactsList.urlPath);
-        }
+          loginCredentialsDBHelper = CredentialsDBHelper();
+          userDBHelper = UserDBHelper();
+
+          userDBHelper
+              .isRegistered(emailFieldController.text)
+              .then((value) => setState(
+                  () {
+                status = value;
+                if(!status){
+                  formResponseMassage("Already Registered with email", context);
+                } else {
+                  userDBHelper.save(user);
+                  loginCredentialsDBHelper.save(credentials);
+
+                  formResponseMassage("SuccessFully Registered", context);
+                  Navigator.pushNamed(context,
+                      ContactsList.urlPath);
+                }
+              } ));
+          }
       },
       child: Column(
         children: <Widget> [
