@@ -1,9 +1,11 @@
 import 'package:contact_book/core/database/contactsHelper.dart';
 import 'package:contact_book/core/database/databaseInitializer.dart';
+import 'package:contact_book/core/database/userHelper.dart';
 import 'package:contact_book/core/models/contact.dart';
 import 'package:contact_book/ui/widgets/addContact.dart';
 import 'package:contact_book/ui/widgets/contactInfo.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'logIn.dart';
 
@@ -22,6 +24,8 @@ class _ContactsListState extends State<ContactsList> {
 
   String email;
   var contactsDBHelper;
+  var userDBHelper;
+  String userName;
 
   List<Contact> contacts = [];
   List<Contact> items = [];
@@ -31,12 +35,17 @@ class _ContactsListState extends State<ContactsList> {
     super.initState();
     var _ = DatabaseInitializer().initDb();
     contactsDBHelper = ContactDBHelper();
+    userDBHelper = UserDBHelper();
 
     contactsDBHelper.getContacts(email).then((value) => setState(() {
       contacts = value;
-      print(contacts.length);
       for(var item in contacts)
         items.add(item);
+    }));
+
+    userDBHelper.getUserName(email).then((value) => setState((){
+      userName = value;
+      print(userName);
     }));
   }
 
@@ -69,6 +78,11 @@ class _ContactsListState extends State<ContactsList> {
       });
     }
   }
+
+  void _launchURL(_url) async =>
+      await canLaunch(_url) ?
+      await launch(_url) :
+      throw 'Could not launch $_url';
 
   @override
   Widget build(BuildContext context) {
@@ -106,11 +120,65 @@ class _ContactsListState extends State<ContactsList> {
                   return Card(
                     child:
                       ListTile(
-                        title: Center(child: Text('${contacts[index].name}')),
+                        title: Center(child: Text(
+                            '${contacts[index].name}',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                          ),
+                        )),
                         subtitle: Column(
                           children: [
-                            Text('${contacts[index].contactEmail}'),
-                            Text('${contacts[index].phone}'),
+                            Text(
+                              '${contacts[index].contactEmail}',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                              ),
+                            ),
+                            Text(
+                              '${contacts[index].phone}',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                              ),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                CircleAvatar(
+                                  backgroundColor: Colors.pinkAccent,
+                                  child: IconButton(icon:Icon(Icons.phone),
+                                    onPressed: () {
+                                      _launchURL('tel: ${contacts[index].phone}');
+                                    },
+                                  ),
+                                ),
+                                CircleAvatar(
+                                  backgroundColor: Colors.pinkAccent,
+                                  child: IconButton(icon:Icon(Icons.email),
+                                    onPressed: () {
+                                      final Uri _emailLaunchUri = Uri(
+                                          scheme: 'mailto',
+                                          path: '${contacts[index].contactEmail}',
+                                          queryParameters: {
+                                            'subject': 'Conversion'
+                                          }
+                                      );
+                                      _launchURL(_emailLaunchUri.toString());
+                                    },
+                                  ),
+                                ),
+                                CircleAvatar(
+                                  backgroundColor: Colors.pinkAccent,
+                                  child: IconButton(icon:Icon(Icons.sms),
+                                    onPressed: () {
+                                      _launchURL('sms: ${contacts[index].phone}');
+                                    },
+                                  ),
+                                ),
+                              ],
+                            )
                           ],
                         ),
                         leading: CircleAvatar(
@@ -139,6 +207,7 @@ class _ContactsListState extends State<ContactsList> {
                               builder: (context) =>
                                   ContactInfo(
                                       id: contacts[index].id,
+                                      name : userName,
                                   ),
                             ),
                           );
@@ -155,7 +224,7 @@ class _ContactsListState extends State<ContactsList> {
             padding: const EdgeInsets.all(0),
             children: <Widget>[
               UserAccountsDrawerHeader(
-                  accountName: Text('Name :'),
+                  accountName: Text('$userName'),
                   accountEmail: Text('$email'),
                   currentAccountPicture: CircleAvatar(
                     backgroundColor: Colors.white,
@@ -166,6 +235,7 @@ class _ContactsListState extends State<ContactsList> {
                 child: ListTile(
                   title: Text("Add New Contact"),
                   onTap: () {
+                    Navigator.pop(context);
                     Navigator.push(
                       context,
                       MaterialPageRoute(

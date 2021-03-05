@@ -91,7 +91,6 @@ class ContactDBHelper {
     Contact contact;
     if (maps.length > 0) {
       contact = Contact.fromMap(maps[0]);
-      print('db : ${contact.toMap()}');
     }
     return contact;
   }

@@ -50,7 +50,6 @@ class CredentialsDBHelper {
         whereArgs: [email, password]);
 
     if (maps.isNotEmpty) {
-      print(maps.toString());
       return true;
     } else {
       return false;

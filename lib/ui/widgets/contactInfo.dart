@@ -10,17 +10,19 @@ import 'package:flutter/material.dart';
 import 'contactList.dart';
 
 class ContactInfo extends StatefulWidget {
-  ContactInfo({Key key, this.id}) : super(key: key);
+  ContactInfo({Key key, this.id, this.name}) : super(key: key);
   final int id;
+  final String name;
 
   static const String urlPath = "details";
   @override
-  _ContactInfoPageState createState() => _ContactInfoPageState(id: id);
+  _ContactInfoPageState createState() => _ContactInfoPageState(id: id, name: name);
 }
 
 class _ContactInfoPageState extends State<ContactInfo> {
-  _ContactInfoPageState({this.id}) : super();
+  _ContactInfoPageState({this.id, this.name}) : super();
   final int id;
+  final String name;
 
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
 
@@ -40,7 +42,6 @@ class _ContactInfoPageState extends State<ContactInfo> {
 
     contactsDBHelper.getContact(id).then((value) => setState(() {
       contact = value;
-      print(contact.toMap());
       if(contact != null) {
         emailFieldController = TextEditingController(text: '${contact.contactEmail}');
         nameFieldController = TextEditingController(text: '${contact.name}');
@@ -223,7 +224,7 @@ class _ContactInfoPageState extends State<ContactInfo> {
           padding: const EdgeInsets.all(0),
           children: <Widget>[
             UserAccountsDrawerHeader(
-              accountName: Text('${contact.name}'),
+              accountName: Text('$name'),
               accountEmail: Text('${contact.email}'),
               currentAccountPicture: CircleAvatar(
                 backgroundColor: Colors.white,
@@ -234,6 +235,7 @@ class _ContactInfoPageState extends State<ContactInfo> {
               child: ListTile(
                 title: Text("Add New Contact"),
                 onTap: () {
+                  Navigator.pop(context);
                   Navigator.push(
                     context,
                     MaterialPageRoute(

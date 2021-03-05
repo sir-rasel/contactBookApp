@@ -62,6 +62,19 @@ class UserDBHelper {
     return users;
   }
 
+  Future<String> getUserName(String email) async {
+    var dbClient = await db;
+    List<Map> maps = await dbClient.query(
+        TABLE, columns: [NAME], where: '$EMAIL = ?',
+        whereArgs: [email]);
+
+    User user;
+    if (maps.length > 0) {
+      user = User.fromMap(maps[0]);
+    }
+    return user.name;
+  }
+
   Future<bool> isRegistered(String email) async {
     var dbContact = await db;
     List<Map> maps = await dbContact.query(TABLE,
@@ -70,7 +83,6 @@ class UserDBHelper {
         whereArgs: [email]);
 
     if (maps.isNotEmpty) {
-      print(maps.toString());
       return false;
     } else {
       return true;
