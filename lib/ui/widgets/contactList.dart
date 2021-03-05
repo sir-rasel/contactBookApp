@@ -45,7 +45,6 @@ class _ContactsListState extends State<ContactsList> {
 
     userDBHelper.getUserName(email).then((value) => setState((){
       userName = value;
-      print(userName);
     }));
   }
 
