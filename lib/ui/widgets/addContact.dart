@@ -123,7 +123,7 @@ class _AddContactPageState extends State<AddContact> {
                 MaterialPageRoute(
                   builder: (context) =>
                       ContactsList(
-                          email: emailFieldController.text
+                          email: email
                       ),
                 ),
               );

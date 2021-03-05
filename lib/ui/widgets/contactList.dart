@@ -34,6 +34,7 @@ class _ContactsListState extends State<ContactsList> {
 
     contactsDBHelper.getContacts(email).then((value) => setState(() {
       contacts = value;
+      print(contacts.length);
       for(var item in contacts)
         items.add(item);
     }));
@@ -54,7 +55,6 @@ class _ContactsListState extends State<ContactsList> {
       });
 
       setState(() {
-        print(items.length);
         contacts.clear();
         for(var item in tmpList)
           contacts.add(item);
@@ -109,7 +109,7 @@ class _ContactsListState extends State<ContactsList> {
                         title: Center(child: Text('${contacts[index].name}')),
                         subtitle: Column(
                           children: [
-                            Text('${contacts[index].email}'),
+                            Text('${contacts[index].contactEmail}'),
                             Text('${contacts[index].phone}'),
                           ],
                         ),
@@ -181,13 +181,33 @@ class _ContactsListState extends State<ContactsList> {
               Card(
                 child: ListTile(
                   title: Text("Sort By Name"),
-                  onTap: () {},
+                  onTap: () {
+                    setState(() {
+                      items.sort((a, b) =>
+                          a.name.compareTo(b.name));
+
+                      contacts.clear();
+                      for(var item in items)
+                        contacts.add(item);
+                      Navigator.pop(context);
+                    });
+                  },
                 ),
               ),
               Card(
                 child: ListTile(
                   title: Text("Sort By Number"),
-                  onTap: () {},
+                  onTap: () {
+                    setState(() {
+                      items.sort((a, b) =>
+                          a.phone.compareTo(b.phone));
+
+                      contacts.clear();
+                      for(var item in items)
+                        contacts.add(item);
+                      Navigator.pop(context);
+                    });
+                  },
                 ),
               ),
               Card(
