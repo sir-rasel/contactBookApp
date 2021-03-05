@@ -11,13 +11,13 @@ class DatabaseInitializer {
   static const String ID = 'id';
   static const String NAME = 'name';
   static const String EMAIL = 'email';
+  static const String CONTACT_EMAIL = 'ContactEmail';
   static const String PHONE = 'phone';
   static const String ADDRESS = 'address';
   static const String PASSWORD = 'password';
 
   Future<Database> get db async {
     if (_db != null) {
-      print('Exist');
       return _db;
     }
     _db = await initDb();
@@ -55,6 +55,7 @@ class DatabaseInitializer {
         '$ID INTEGER PRIMARY KEY,'
         '$NAME TEXT,'
         '$EMAIL TEXT,'
+        '$CONTACT_EMAIL TEXT,'
         '$PHONE TEXT,'
         '$ADDRESS TEXT)');
   }

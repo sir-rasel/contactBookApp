@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:contact_book/core/database/credentialsHelper.dart';
 import 'package:contact_book/core/database/databaseInitializer.dart';
 import 'package:contact_book/ui/utils/utilityFunctions.dart';
-import 'package:contact_book/ui/widgets/contactInfo.dart';
 import 'package:contact_book/ui/widgets/contactList.dart';
 import 'package:contact_book/ui/widgets/registration.dart';
 import 'package:flutter/material.dart';
@@ -89,8 +88,15 @@ class _LogInPageState extends State<LogIn> {
                       formResponseMassage("Email or password invalid!", context);
                     } else {
                       formResponseMassage("Login Successfully!!", context);
-                      Navigator.pushNamed(context,
-                          ContactsList.urlPath);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                ContactsList(
+                                    email: emailFieldController.text
+                                ),
+                        ),
+                      );
                     }
                   } ));
             }
@@ -126,18 +132,6 @@ class _LogInPageState extends State<LogIn> {
               onPressed:() => exit(0),
           ),
           title: Text('Bhalobasar Contact Book',),
-          actions: [
-            Padding(
-              padding: EdgeInsets.only(right: 10.0),
-              child: IconButton(
-                  icon: Icon(Icons.account_circle,
-                      color: Colors.white, size: 40),
-                  onPressed: () {
-                    Navigator.pushNamed(context, ContactInfo.urlPath);
-                  },
-              ),
-            ),
-          ],
         ),
         body: SingleChildScrollView(
           child: Center(
@@ -184,8 +178,12 @@ class _LogInPageState extends State<LogIn> {
                       ),
                       ElevatedButton(
                           onPressed: () {
-                            Navigator.pushNamed(context,
-                                Registration.urlPath);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Registration(),
+                              ),
+                            );
                           },
                           child: Text("Haven't an account? then, Register"),
                           style: ElevatedButton.styleFrom(

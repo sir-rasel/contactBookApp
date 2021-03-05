@@ -1,25 +1,41 @@
 import 'dart:ui';
+import 'package:contact_book/core/database/contactsHelper.dart';
+import 'package:contact_book/core/database/databaseInitializer.dart';
+import 'package:contact_book/core/models/contact.dart';
 import 'package:contact_book/ui/utils/utilityFunctions.dart';
 import 'package:flutter/material.dart';
 
-class AddContact extends StatefulWidget {
-  AddContact({Key key, this.title}) : super(key: key);
+import 'contactList.dart';
 
-  final String title;
+class AddContact extends StatefulWidget {
+  AddContact({Key key, this.email}) : super(key: key);
+  final String email;
 
   static const String urlPath = "add";
   @override
-  _addContactPageState createState() => _addContactPageState();
+  _AddContactPageState createState() => _AddContactPageState(email: email);
 }
 
-class _addContactPageState extends State<AddContact> {
+class _AddContactPageState extends State<AddContact> {
+  _AddContactPageState({this.email}) : super();
+  final String email;
+
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
 
   TextEditingController emailFieldController = TextEditingController();
-  TextEditingController passwordFieldController = TextEditingController();
   TextEditingController phoneFieldController = TextEditingController();
   TextEditingController nameFieldController = TextEditingController();
   TextEditingController addressFieldController = TextEditingController();
+
+  var contactsDBHelper;
+  bool isContactExist;
+
+  @override
+  void initState() {
+    super.initState();
+    var _ = DatabaseInitializer().initDb();
+    contactsDBHelper = ContactDBHelper();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,19 +60,6 @@ class _addContactPageState extends State<AddContact> {
           contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
           hintText: "Email",
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(40.0))
-      ),
-    );
-
-    final passwordField = TextField(
-      obscureText: true,
-      controller: passwordFieldController,
-      keyboardType: TextInputType.text,
-      style: style,
-      decoration: InputDecoration(
-          contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-          hintText: "Password",
-          border:
-          OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))
       ),
     );
 
@@ -92,8 +95,6 @@ class _addContactPageState extends State<AddContact> {
 
         if (!emailValid || emailFieldController.text.isEmpty) {
           formResponseMassage("Email should be valid and not empty", context);
-        } else if (passwordFieldController.text.isEmpty) {
-          formResponseMassage("Password must not empty", context);
         } else if (nameFieldController.text.isEmpty) {
           formResponseMassage("Name must not empty", context);
         } else if (phoneFieldController.text.isEmpty) {
@@ -101,7 +102,33 @@ class _addContactPageState extends State<AddContact> {
         } else {
           // Login data checked goes here
           // like check is user registered or password correct
+          Contact contact = Contact(
+              null,
+              nameFieldController.text,
+              phoneFieldController.text,
+              email,
+              emailFieldController.text,
+              addressFieldController.text
+          );
+          contactsDBHelper.isContactExist(phoneFieldController.text).then((value) => setState(() {
+            isContactExist = value;
 
+            if(!isContactExist){
+              formResponseMassage("Phone Number already exist", context);
+            } else{
+              formResponseMassage("Contact Added Successfully", context);
+              contactsDBHelper.save(contact);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      ContactsList(
+                          email: emailFieldController.text
+                      ),
+                ),
+              );
+            }
+          }));
         }
       },
       child: Column(
@@ -134,7 +161,7 @@ class _addContactPageState extends State<AddContact> {
             onPressed:() => Navigator.pop(context, false),
           ),
           backgroundColor: Colors.redAccent,
-          title: Text('Bhalobasar Contact Book'),
+          title: Text('$email'),
         ),
         body: SingleChildScrollView(
           child: Center(
@@ -176,8 +203,6 @@ class _addContactPageState extends State<AddContact> {
                       phoneField,
                       SizedBox(height: 20.0),
                       addressField,
-                      SizedBox(height: 25.0),
-                      passwordField,
                       SizedBox(
                         height: 35.0,
                       ),

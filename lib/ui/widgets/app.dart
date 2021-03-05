@@ -1,8 +1,4 @@
-import 'package:contact_book/ui/widgets/addContact.dart';
-import 'package:contact_book/ui/widgets/contactInfo.dart';
-import 'package:contact_book/ui/widgets/contactList.dart';
 import 'package:contact_book/ui/widgets/logIn.dart';
-import 'package:contact_book/ui/widgets/registration.dart';
 import 'package:flutter/material.dart';
 
 class MyApp extends StatelessWidget {
@@ -14,14 +10,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      initialRoute: LogIn.urlPath,
-      routes: {
-        LogIn.urlPath: (context) => LogIn(),
-        Registration.urlPath: (context) => Registration(),
-        ContactInfo.urlPath: (context) => ContactInfo(),
-        AddContact.urlPath: (context) => AddContact(),
-        ContactsList.urlPath: (context) => ContactsList(),
-      },
+      home: LogIn(),
     );
   }
 }

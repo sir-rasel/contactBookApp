@@ -6,6 +6,7 @@ import 'package:contact_book/core/models/credentials.dart';
 import 'package:contact_book/core/models/user.dart';
 import 'package:contact_book/ui/utils/utilityFunctions.dart';
 import 'package:contact_book/ui/widgets/contactList.dart';
+import 'package:contact_book/ui/widgets/logIn.dart';
 import 'package:flutter/material.dart';
 
 class Registration extends StatefulWidget {
@@ -151,8 +152,12 @@ class _RegistrationPageState extends State<Registration> {
                   loginCredentialsDBHelper.save(credentials);
 
                   formResponseMassage("SuccessFully Registered", context);
-                  Navigator.pushNamed(context,
-                      ContactsList.urlPath);
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        ContactsList(
+                            email: emailFieldController.text
+                        ),
+                  );
                 }
               } ));
           }
@@ -237,6 +242,21 @@ class _RegistrationPageState extends State<Registration> {
                       registerButton,
                       SizedBox(
                         height: 15.0,
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => LogIn(),
+                            ),
+                          );
+                        },
+                        child: Text("Have an account? then, LogIn"),
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.red, // background
+                          onPrimary: Colors.white,
+                        ),
                       ),
                     ],
                   ),

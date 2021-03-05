@@ -1,25 +1,54 @@
 import 'dart:ui';
+import 'package:contact_book/core/database/contactsHelper.dart';
+import 'package:contact_book/core/database/databaseInitializer.dart';
+import 'package:contact_book/core/models/contact.dart';
 import 'package:contact_book/ui/utils/utilityFunctions.dart';
+import 'package:contact_book/ui/widgets/addContact.dart';
+import 'package:contact_book/ui/widgets/logIn.dart';
 import 'package:flutter/material.dart';
 
-class ContactInfo extends StatefulWidget {
-  ContactInfo({Key key, this.title}) : super(key: key);
+import 'contactList.dart';
 
-  final String title;
+class ContactInfo extends StatefulWidget {
+  ContactInfo({Key key, this.id}) : super(key: key);
+  final int id;
 
   static const String urlPath = "details";
   @override
-  _ContactInfoPageState createState() => _ContactInfoPageState();
+  _ContactInfoPageState createState() => _ContactInfoPageState(id: id);
 }
 
 class _ContactInfoPageState extends State<ContactInfo> {
+  _ContactInfoPageState({this.id}) : super();
+  final int id;
+
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
 
-  TextEditingController emailFieldController = TextEditingController();
-  TextEditingController passwordFieldController = TextEditingController();
-  TextEditingController phoneFieldController = TextEditingController();
-  TextEditingController nameFieldController = TextEditingController();
-  TextEditingController addressFieldController = TextEditingController();
+  TextEditingController emailFieldController;
+  TextEditingController phoneFieldController;
+  TextEditingController nameFieldController;
+  TextEditingController addressFieldController;
+
+  var contactsDBHelper;
+  Contact contact;
+
+  @override
+  void initState() {
+    super.initState();
+    var _ = DatabaseInitializer().initDb();
+    contactsDBHelper = ContactDBHelper();
+
+    contactsDBHelper.getContact(id).then((value) => setState(() {
+      contact = value;
+      print(contact.toMap());
+      if(contact != null) {
+        emailFieldController = TextEditingController(text: '${contact.contactEmail}');
+        nameFieldController = TextEditingController(text: '${contact.name}');
+        phoneFieldController = TextEditingController(text: '${contact.phone}');
+        addressFieldController = TextEditingController(text: '${contact.address}');
+      }
+    }));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +59,6 @@ class _ContactInfoPageState extends State<ContactInfo> {
       style: style,
       decoration: InputDecoration(
           contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-          hintText: "Full Name",
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(40.0))
       ),
     );
@@ -42,21 +70,7 @@ class _ContactInfoPageState extends State<ContactInfo> {
       style: style,
       decoration: InputDecoration(
           contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-          hintText: "Email",
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(40.0))
-      ),
-    );
-
-    final passwordField = TextField(
-      obscureText: true,
-      controller: passwordFieldController,
-      keyboardType: TextInputType.text,
-      style: style,
-      decoration: InputDecoration(
-          contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-          hintText: "Password",
-          border:
-          OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))
       ),
     );
 
@@ -67,7 +81,6 @@ class _ContactInfoPageState extends State<ContactInfo> {
       style: style,
       decoration: InputDecoration(
           contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-          hintText: "Phone Number",
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(40.0))
       ),
     );
@@ -79,7 +92,6 @@ class _ContactInfoPageState extends State<ContactInfo> {
       style: style,
       decoration: InputDecoration(
           contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-          hintText: "Address",
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(40.0))
       ),
     );
@@ -92,8 +104,6 @@ class _ContactInfoPageState extends State<ContactInfo> {
 
         if (!emailValid || emailFieldController.text.isEmpty) {
           formResponseMassage("Email should be valid and not empty", context);
-        } else if (passwordFieldController.text.isEmpty) {
-          formResponseMassage("Password must not empty", context);
         } else if (nameFieldController.text.isEmpty) {
           formResponseMassage("Name must not empty", context);
         } else if (phoneFieldController.text.isEmpty) {
@@ -102,6 +112,26 @@ class _ContactInfoPageState extends State<ContactInfo> {
           // Login data checked goes here
           // like check is user registered or password correct
 
+          if(emailFieldController.text.length > 0)
+            contact.email = emailFieldController.text;
+          if(nameFieldController.text.length > 0)
+            contact.name = nameFieldController.text;
+          if(phoneFieldController.text.length > 0)
+            contact.phone = phoneFieldController.text;
+          if(addressFieldController.text.length > 0)
+            contact.address = addressFieldController.text;
+
+          contactsDBHelper.update(contact);
+          formResponseMassage("Updated Sucessfully", context);
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  ContactsList(
+                      email: emailFieldController.text
+                  ),
+            ),
+          );
         }
       },
       child: Column(
@@ -176,11 +206,7 @@ class _ContactInfoPageState extends State<ContactInfo> {
                       phoneField,
                       SizedBox(height: 20.0),
                       addressField,
-                      SizedBox(height: 25.0),
-                      passwordField,
-                      SizedBox(
-                        height: 35.0,
-                      ),
+                      SizedBox(height: 35.0),
                       updateButton,
                       SizedBox(
                         height: 15.0,
@@ -191,7 +217,53 @@ class _ContactInfoPageState extends State<ContactInfo> {
               ],
             ),
           ),
-        )
+        ),
+      endDrawer: Drawer(
+        child: contact != null? ListView(
+          padding: const EdgeInsets.all(0),
+          children: <Widget>[
+            UserAccountsDrawerHeader(
+              accountName: Text('${contact.name}'),
+              accountEmail: Text('${contact.email}'),
+              currentAccountPicture: CircleAvatar(
+                backgroundColor: Colors.white,
+                child: IconButton(icon:Icon(Icons.person),iconSize: 50,),
+              ),
+            ),
+            Card(
+              child: ListTile(
+                title: Text("Add New Contact"),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          AddContact(
+                            email: contact.email,
+                          ),
+                    ),
+                  );
+                },
+              ),
+            ),
+            Card(
+              child: ListTile(
+                tileColor: Colors.red,
+                title: Text("Log Out"),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          LogIn(),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ):null,
+      ),
     );
   }
 }
