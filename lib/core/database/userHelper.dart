@@ -42,7 +42,6 @@ class UserDBHelper {
   Future<User> save(User user) async {
     var dbClient = await db;
     user.id = await dbClient.insert(TABLE, user.toMap());
-    print('$user.id');
     return user;
   }
 

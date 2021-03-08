@@ -131,7 +131,7 @@ class _LogInPageState extends State<LogIn> {
           leading: IconButton(icon:Icon(Icons.arrow_back),
               onPressed:() => exit(0),
           ),
-          title: Text('Bhalobasar Contact Book',),
+          title: Text('Account LogIn',),
         ),
         body: SingleChildScrollView(
           child: Center(
@@ -142,11 +142,10 @@ class _LogInPageState extends State<LogIn> {
                 SizedBox(
                   height: 50,
                 ),
-                Image(
-                  image: AssetImage("assests/images/icon.png"),
-                  width: 300,
-                  height: 250,
-                  alignment: Alignment.center,
+                CircleAvatar(
+                  radius: 75,
+                  backgroundColor: Colors.teal,
+                  backgroundImage: AssetImage("assests/images/icon.png"),
                 ),
                 SizedBox(
                   height: 15,

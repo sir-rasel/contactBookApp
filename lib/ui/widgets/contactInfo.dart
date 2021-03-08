@@ -6,7 +6,9 @@ import 'package:contact_book/ui/utils/utilityFunctions.dart';
 import 'package:contact_book/ui/widgets/addContact.dart';
 import 'package:contact_book/ui/widgets/logIn.dart';
 import 'package:flutter/material.dart';
-
+import 'dart:io';
+import 'dart:async';
+import 'package:image_picker/image_picker.dart';
 import 'contactList.dart';
 
 class ContactInfo extends StatefulWidget {
@@ -33,6 +35,8 @@ class _ContactInfoPageState extends State<ContactInfo> {
 
   var contactsDBHelper;
   Contact contact;
+  String email;
+  String imageUrl;
 
   @override
   void initState() {
@@ -47,6 +51,9 @@ class _ContactInfoPageState extends State<ContactInfo> {
         nameFieldController = TextEditingController(text: '${contact.name}');
         phoneFieldController = TextEditingController(text: '${contact.phone}');
         addressFieldController = TextEditingController(text: '${contact.address}');
+        email = contact.email;
+
+        imageUrl = contact.image;
       }
     }));
   }
@@ -114,7 +121,7 @@ class _ContactInfoPageState extends State<ContactInfo> {
           // like check is user registered or password correct
 
           if(emailFieldController.text.length > 0)
-            contact.email = emailFieldController.text;
+            contact.contactEmail = emailFieldController.text;
           if(nameFieldController.text.length > 0)
             contact.name = nameFieldController.text;
           if(phoneFieldController.text.length > 0)
@@ -122,14 +129,16 @@ class _ContactInfoPageState extends State<ContactInfo> {
           if(addressFieldController.text.length > 0)
             contact.address = addressFieldController.text;
 
+          contact.image = imageUrl;
           contactsDBHelper.update(contact);
+
           formResponseMassage("Updated Sucessfully", context);
           Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) =>
                   ContactsList(
-                      email: emailFieldController.text
+                      email: email,
                   ),
             ),
           );
@@ -165,7 +174,7 @@ class _ContactInfoPageState extends State<ContactInfo> {
             onPressed:() => Navigator.pop(context, false),
           ),
           backgroundColor: Colors.redAccent,
-          title: Text('Bhalobasar Contact Book'),
+          title: Text('Contact Details'),
         ),
         body: SingleChildScrollView(
           child: Center(
@@ -176,15 +185,47 @@ class _ContactInfoPageState extends State<ContactInfo> {
                 SizedBox(
                   height: 50,
                 ),
-                Image(
-                  image: AssetImage("assests/images/person.jpg"),
-                  width: 300,
-                  height: 250,
-                  alignment: Alignment.center,
+                CircleAvatar(
+                  radius: 75,
+                  backgroundColor: Colors.teal,
+                  backgroundImage: imageUrl != null ?
+                  FileImage(File(imageUrl))
+                  : AssetImage("assests/images/person.jpg"),
+
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(40.0, 100.0, 0, 10),
+                    child: FloatingActionButton(
+                      tooltip: "Upload Photo",
+                      backgroundColor: Colors.white70,
+                      child: Icon(
+                        Icons.edit,
+                        size: 30,
+                        color: Colors.black,
+                      ),
+                      onPressed: () async {
+                        await ImagePicker()
+                            .getImage(source: ImageSource.gallery)
+                            .then((file) {
+                          if (file == null) return;
+                          setState(() {
+                            imageUrl = file.path;
+                          });
+                        });
+                      },
+                    ),
+                  ),
                 ),
                 SizedBox(
                   height: 15,
                 ),
+                imageUrl != null? ElevatedButton(
+                    onPressed: () {
+                        setState(() {
+                          imageUrl = null;
+                        });
+                    },
+                    child: Text('Remove Profile Picture'),
+                ): SizedBox(),
                 Text(
                   "Contact Details :",
                   style: TextStyle(

@@ -152,11 +152,14 @@ class _RegistrationPageState extends State<Registration> {
                   loginCredentialsDBHelper.save(credentials);
 
                   formResponseMassage("SuccessFully Registered", context);
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        ContactsList(
-                            email: emailFieldController.text
-                        ),
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          ContactsList(
+                              email: emailFieldController.text
+                          ),
+                    ),
                   );
                 }
               } ));
@@ -192,7 +195,7 @@ class _RegistrationPageState extends State<Registration> {
             onPressed:() => Navigator.pop(context, false),
           ),
           backgroundColor: Colors.redAccent,
-          title: Text('Bhalobasar Contact Book'),
+          title: Text('Account Register'),
         ),
         body: SingleChildScrollView(
           child: Center(
@@ -203,11 +206,10 @@ class _RegistrationPageState extends State<Registration> {
                 SizedBox(
                   height: 50,
                 ),
-                Image(
-                  image: AssetImage("assests/images/icon.png"),
-                  width: 300,
-                  height: 250,
-                  alignment: Alignment.center,
+                CircleAvatar(
+                  radius: 75,
+                  backgroundColor: Colors.teal,
+                  backgroundImage: AssetImage("assests/images/icon.png"),
                 ),
                 SizedBox(
                   height: 15,

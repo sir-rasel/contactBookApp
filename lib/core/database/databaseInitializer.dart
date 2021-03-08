@@ -15,6 +15,7 @@ class DatabaseInitializer {
   static const String PHONE = 'phone';
   static const String ADDRESS = 'address';
   static const String PASSWORD = 'password';
+  static const String IMAGE = 'image';
 
   Future<Database> get db async {
     if (_db != null) {
@@ -57,6 +58,7 @@ class DatabaseInitializer {
         '$EMAIL TEXT,'
         '$CONTACT_EMAIL TEXT,'
         '$PHONE TEXT,'
+        '$IMAGE TEXT,'
         '$ADDRESS TEXT)');
   }
 

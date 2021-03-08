@@ -10,6 +10,7 @@ class ContactDBHelper {
   static const String EMAIL = 'email';
   static const String CONTACT_EMAIL = 'ContactEmail';
   static const String PHONE = 'phone';
+  static const String IMAGE = 'image';
   static const String ADDRESS = 'address';
   static const String TABLE = 'Contacts';
   static const String DB_NAME = 'contactBook.db';
@@ -38,13 +39,13 @@ class ContactDBHelper {
         '$EMAIL TEXT,'
         '$CONTACT_EMAIL TEXT,'
         '$PHONE TEXT,'
+        '$IMAGE TEXT,'
         '$ADDRESS TEXT)');
   }
 
   Future<Contact> save(Contact contact) async {
     var dbClient = await db;
     contact.id = await dbClient.insert(TABLE, contact.toMap());
-    print('$contact.id');
     return contact;
   }
 
@@ -53,7 +54,7 @@ class ContactDBHelper {
     List<Map> maps = await dbClient.query(
         TABLE, columns: [
       ID, NAME, EMAIL, CONTACT_EMAIL,
-      PHONE, ADDRESS], where: '$EMAIL = ?',
+      PHONE, IMAGE, ADDRESS], where: '$EMAIL = ?',
         whereArgs: [email]);
 
     List<Contact> contacts = [];
@@ -65,15 +66,14 @@ class ContactDBHelper {
     return contacts;
   }
 
-  Future<bool> isContactExist(String phone) async {
+  Future<bool> isContactExist(String phone, String email) async {
     var dbContact = await db;
     List<Map> maps = await dbContact.query(TABLE,
         columns: [NAME],
-        where: '$PHONE = ?',
-        whereArgs: [phone]);
+        where: '$PHONE = ? and $EMAIL = ?',
+        whereArgs: [phone, email]);
 
     if (maps.isNotEmpty) {
-      print(maps.toString());
       return false;
     } else {
       return true;
@@ -85,7 +85,7 @@ class ContactDBHelper {
     List<Map> maps = await dbClient.query(
         TABLE, columns: [
       ID, NAME, EMAIL, CONTACT_EMAIL,
-      PHONE, ADDRESS], where: '$ID = ?',
+      PHONE, IMAGE, ADDRESS], where: '$ID = ?',
         whereArgs: [id]);
 
     Contact contact;

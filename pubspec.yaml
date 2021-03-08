@@ -23,8 +23,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  get_it: ^3.1.0
-  scoped_model: ^1.0.1
   url_launcher: ^5.0.2
   image_picker: ^0.6.0+3
   fluttertoast: ^7.1.8

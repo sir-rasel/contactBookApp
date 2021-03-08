@@ -1,9 +1,11 @@
+import 'dart:io';
 import 'dart:ui';
 import 'package:contact_book/core/database/contactsHelper.dart';
 import 'package:contact_book/core/database/databaseInitializer.dart';
 import 'package:contact_book/core/models/contact.dart';
 import 'package:contact_book/ui/utils/utilityFunctions.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'contactList.dart';
 
@@ -29,6 +31,7 @@ class _AddContactPageState extends State<AddContact> {
 
   var contactsDBHelper;
   bool isContactExist;
+  String imageUrl;
 
   @override
   void initState() {
@@ -108,9 +111,10 @@ class _AddContactPageState extends State<AddContact> {
               phoneFieldController.text,
               email,
               emailFieldController.text,
+              imageUrl,
               addressFieldController.text
           );
-          contactsDBHelper.isContactExist(phoneFieldController.text).then((value) => setState(() {
+          contactsDBHelper.isContactExist(phoneFieldController.text, email).then((value) => setState(() {
             isContactExist = value;
 
             if(!isContactExist){
@@ -172,12 +176,44 @@ class _AddContactPageState extends State<AddContact> {
                 SizedBox(
                   height: 50,
                 ),
-                Image(
-                  image: AssetImage("assests/images/person.jpg"),
-                  width: 300,
-                  height: 250,
-                  alignment: Alignment.center,
+                CircleAvatar(
+                  radius: 75,
+                  backgroundColor: Colors.teal,
+                  backgroundImage: imageUrl != null ?
+                  FileImage(File(imageUrl))
+                      : AssetImage("assests/images/person.jpg"),
+
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(40.0, 100.0, 0, 10),
+                    child: FloatingActionButton(
+                      tooltip: "Upload Photo",
+                      backgroundColor: Colors.white70,
+                      child: Icon(
+                        Icons.edit,
+                        size: 30,
+                        color: Colors.black,
+                      ),
+                      onPressed: () async {
+                        await ImagePicker()
+                            .getImage(source: ImageSource.gallery)
+                            .then((file) {
+                          if (file == null) return;
+                          setState(() {
+                            imageUrl = file.path;
+                          });
+                        });
+                      },
+                    ),
+                  ),
                 ),
+                imageUrl != null? ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      imageUrl = null;
+                    });
+                  },
+                  child: Text('Remove Profile Picture'),
+                ): SizedBox(),
                 SizedBox(
                   height: 15,
                 ),
